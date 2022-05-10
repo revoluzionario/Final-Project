@@ -1,0 +1,435 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <vector>
+#include "inithelper.h"
+using std::string;
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 640;
+bool isQuit = false;
+SDL_Window* gWindow = NULL;
+SDL_Renderer* gRenderer = NULL;
+SDL_Event e;
+enum gameState
+{
+    MENU, ABOUT, PLAY, CONFIG
+};
+gameState state;
+
+
+
+bool isInside(const int posX, const int posY, SDL_Rect &rect)
+{
+    return (posX > rect.x && posY > rect.y && posX < rect.x + rect.w && posY < rect.y + rect.h);
+}
+void renderButton(string path, int x, int y, int w, int h)
+{
+    SDL_Texture* cellTexture = loadTexture(gRenderer,path);
+    SDL_Rect cellrect ={x,y,w,h};
+    SDL_RenderCopy(gRenderer,cellTexture,NULL,&cellrect);
+}
+string int_to_path(int i)
+{
+    if (i==-2)
+    {
+      return "tiles/uncovered.jpg";
+    }
+    if (i==-1)
+    {
+      return "tiles/flag.jpg";
+    }
+    if (i==9)
+    {
+      return "tiles/bomb.jpg";
+    }
+    return "tiles/"+std::to_string(i)+".jpg";
+}
+
+
+
+bool switchstatus;
+
+enum playState
+{
+    WIN,PLAYING,LOSE,INIT
+};
+playState play_state;
+/*
+class GameMap
+{
+    public:
+    GameMap(int w, int h, int mines, int flags);
+    ~GameMap();
+    int width, height, numMines, numFlags;
+    static int remainingFlags;
+    int** hiddenMap;
+    int** realMap;
+    bool** flagMap;
+    bool** revealedMap;
+    int** textureLink;
+    void createMap();
+    void randomize();
+    void destroyMap();
+    void reveal(int x, int y);
+    void flag(int x, int y);
+};
+
+int GameMap::remainingFlags = 0;
+GameMap::GameMap(int w, int h, int mines, int flags): width(w),height(h),numMines(mines)
+{
+    createMap();
+    remainingFlags = flags;
+}
+GameMap::~GameMap()
+{
+    destroyMap();
+}
+void GameMap::createMap()
+{
+    hiddenMap = new int* [height];
+    realMap = new int* [height];
+    flagMap = new bool* [height];
+    revealedMap = new bool* [height];
+    textureLink = new int* [height];
+    for (int i=0;i<height;i++)
+    {
+        hiddenMap[i] = new int [width];
+        realMap[i] = new int [width];
+        flagMap[i] = new bool [width];
+        revealedMap[i] = new bool [width];
+        textureLink[i] = new int [width];
+        for (int j=0;j<width;j++)
+        {
+
+            hiddenMap[i][j] = 0;
+            realMap[i][j] = 0;
+            flagMap[i][j] = false;
+            revealedMap[i][j] = false;
+            textureLink[i][j] = -2;
+        }
+    }
+    randomize();
+}
+void GameMap::destroyMap()
+{
+    for (int i = 0; i < height; i++)
+	{
+		delete hiddenMap[i];
+		delete realMap[i];
+		delete flagMap[i];
+		delete revealedMap[i];
+		delete textureLink[i];
+	}
+	delete flagMap;
+    delete hiddenMap;
+    delete realMap;
+    delete revealedMap;
+    delete textureLink;
+}
+void GameMap::randomize()
+{
+    srand(time(NULL));
+
+	std::vector<int> notSelected;
+
+	int temp = width * height;
+	int pos;
+	int _x, _y;
+
+	for (int i = 0; i < temp; i++)
+	{
+		notSelected.push_back(i);
+	}
+
+	for (int i = 0; i < GameMap::numMines; i++)
+	{
+		pos = rand() % notSelected.size();
+		_x = notSelected[pos] / height;
+		_y = notSelected[pos] % height;
+		hiddenMap[_x][_y] = 1;
+		for (int a=-1;a<=1;a++)
+            for (int b=-1;b<=1;b++)
+            {
+                if (b != 0 || a != 0)
+                {
+                    if (_y + b >= 0 && _y + b < width && _x + a >= 0 && _x + a < height)
+                    {
+                        realMap[_x+a][_y+b]++;
+                    }
+                }
+            }
+		notSelected.erase(notSelected.begin() + pos);
+	}
+}
+void GameMap::renderMap()
+{
+        for (int i=0;i<height;i++)
+        {
+            for (int j=0;j<width;j++)
+            {
+                renderButton(int_to_path(textureLink[i][j]),32*i,32*j,32,32);
+            }
+        }
+}
+void GameMap::Play()
+{
+        if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP)
+        {
+            int posX, posY;
+            int i = posX/32;
+            int j = posY/32;
+            SDL_GetMouseState( &posX, &posY );
+            SDL_Rect CellRect {i*32,j*32,32,32};
+            if (e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                if (isInside(posX, posY, CellRect))
+                {
+                    if (e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        if (!flagMap[i][j] && !revealedMap[i][j])
+                        {
+                            reveal(posX, posY);
+                        }
+                    }
+                    if (e.button.button == SDL_BUTTON_RIGHT)
+                    {
+                        if (!revealedMap[i][j])
+                        {
+                            flag(posX, posY);
+                        }
+                    }
+                    renderMap();
+                    SDL_RenderPresent(gRenderer);
+                }
+            }
+        }
+}
+
+
+
+
+
+void GameMap::reveal(int x, int y)
+{
+    int i = x/32;
+    int j = y/32;
+
+        if (hiddenMap[i][j]==1)
+        {
+            textureLink[i][j] = 9;
+            renderButton(int_to_path(textureLink[i][j]), 32*i, 32*j, 32, 32);
+            play_state = LOSE;
+        }
+        else
+        {
+            switch (realMap[i][j])
+            {
+                case 0:
+                    textureLink[i][j] = 0;
+                    break;
+                case 1:
+                    textureLink[i][j] = 1;
+                    break;
+                case 2:
+                    textureLink[i][j] = 2;
+                    break;
+                case 3:
+                    textureLink[i][j] = 3;
+                    break;
+                case 4:
+                   textureLink[i][j] = 4;
+                    break;
+                case 5:
+                    textureLink[i][j] = 5;
+                    break;
+                case 6:
+                    textureLink[i][j] = 6;
+                    break;
+                case 7:
+                    textureLink[i][j] = 7;
+                    break;
+                case 8:
+                    textureLink[i][j] = 8;
+                    break;
+            }
+        }
+        revealedMap[i][j]=true;
+
+}
+void GameMap::flag(int x, int y)
+{
+    int i = x/32;
+    int j = y/32;
+    if (remainingFlags !=0)
+    if (!flagMap[i][j])
+    {
+        textureLink[i][j] = -1;
+        flagMap[i][j] = true;
+        remainingFlags--;
+    }
+    else
+    {
+        textureLink[i][j] = -2;
+        flagMap[i][j] = false;
+        remainingFlags++;
+    }
+}
+
+
+GameMap gMap (3,3,3,3);
+*/
+void renderScreen()
+{
+    SDL_Texture* background;
+    switch (state)
+    {
+    case MENU:
+        background = loadTexture(gRenderer,"background.png");
+        SDL_RenderCopy(gRenderer,background,NULL,NULL);
+        SDL_Rect PlayRect {240,320,160,80};
+        SDL_Rect AboutRect {240,420,160,80};
+        SDL_Texture* playButton;
+        SDL_Texture* aboutButton;
+        playButton = loadTexture(gRenderer,"playButton.png");
+        aboutButton = loadTexture(gRenderer,"aboutButton.png");
+        SDL_RenderCopy(gRenderer,playButton,NULL,&PlayRect);
+        SDL_RenderCopy(gRenderer,aboutButton,NULL,&AboutRect);
+        break;
+    case ABOUT:
+        background = loadTexture(gRenderer,"about.png");
+        SDL_RenderCopy(gRenderer,background,NULL,NULL);
+        SDL_Texture* returnButton = loadTexture(gRenderer,"returnButton.png");
+        SDL_Rect ReturnRect {20,20,40,40};
+        SDL_RenderCopy(gRenderer,returnButton,NULL,&ReturnRect);
+        break;
+    case CONFIG:
+        background = loadTexture(gRenderer,"background.png");
+        SDL_RenderCopy(gRenderer,background,NULL,NULL);
+        SDL_Texture* returnButton = loadTexture(gRenderer,"returnButton.png");
+        SDL_Rect ReturnRect {20,20,40,40};
+        SDL_RenderCopy(gRenderer,returnButton,NULL,&ReturnRect);
+        SDL_Rect PlayRect {240,320,160,80};
+        SDL_Texture* playButton = loadTexture(gRenderer,"playButton.png");
+        SDL_RenderCopy(gRenderer,playButton,NULL,&PlayRect);
+        break;
+    case PLAY:
+        background = loadTexture(gRenderer,"background.png");
+        SDL_RenderCopy(gRenderer,background,NULL,NULL);
+        break;
+    }
+}
+void MenuLoop()
+{
+    if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP)
+    {
+        int posX, posY;
+        SDL_GetMouseState( &posX, &posY );
+        if (e.type == SDL_MOUSEBUTTONDOWN)
+        {
+            if (isInside(posX, posY, PlayRect))
+            {
+                state = CONFIG;
+                switchstatus = true;
+
+            }
+            if (isInside(posX,posY,AboutRect))
+            {
+                state = ABOUT;
+                switchstatus = true;
+
+            }
+        }
+    }
+}
+void AboutLoop()
+{
+    if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP)
+    {
+        int posX, posY;
+        SDL_GetMouseState( &posX, &posY );
+        if (e.type == SDL_MOUSEBUTTONDOWN)
+        {
+            if (isInside(posX, posY, ReturnRect))
+            {
+                state = MENU;
+                switchstatus = true;
+            }
+        }
+    }
+}
+void ConfigLoop()
+{
+    if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP)
+    {
+        int posX, posY;
+        SDL_GetMouseState( &posX, &posY );
+        if (e.type == SDL_MOUSEBUTTONDOWN)
+        {
+            if (isInside(posX, posY, ReturnRect))
+            {
+                state = MENU;
+                switchstatus = true;
+            }
+            if (isInside(posX, posY, PlayRect))
+            {
+                state = PLAY;
+                switchstatus = true;
+            }
+        }
+    }
+}
+void PlayLoop()
+{
+    gMap.Run();
+}
+void SystemLoop()
+{
+    switch (state)
+    {
+    case MENU:
+        MenuLoop();
+        break;
+    case ABOUT:
+        AboutLoop();
+        break;
+    case CONFIG:
+        ConfigLoop();
+        break;
+    case PLAY:
+        PlayLoop();
+        break;
+    }
+}
+int main(int argc, char* argv[])
+{
+    if (!init())
+    {
+        exit(-1);
+    }
+    else
+    {
+        gWindow = generateWindow();
+        gRenderer = generateRenderer(gWindow);
+        while (!isQuit)
+        {
+            while (SDL_PollEvent(&e)!=0)
+            {
+                if (e.type == SDL_QUIT)
+                {
+                    isQuit = true;
+                }
+                else
+                if (switchstatus = true)
+                {
+                    renderScreen();
+                    SDL_RenderPresent(gRenderer);
+                    switchstatus = false;
+                }
+                else
+                {
+                    SystemLoop();
+                }
+            }
+        }
+    }
+}

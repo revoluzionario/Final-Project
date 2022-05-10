@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Final_Project" />
+		<Option title="game" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/Final_Project" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/Final_Project" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -40,11 +40,27 @@
 			<Add library="gdi32" />
 			<Add library="winmm" />
 			<Add library="dxguid" />
+			<Add library="SDL2_ttf.dll" />
+			<Add library="SDL2_mixer.dll" />
+			<Add library="SDL2_image.dll" />
 			<Add directory="C:/Users/Admin/Desktop/SDL2-devel-2.0.20-mingw/SDL2-2.0.20/x86_64-w64-mingw32/lib" />
+			<Add directory="../../SDL2-devel-2.0.20-mingw/SDL2-2.0.20/x86_64-w64-mingw32/bin" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="XCOPY $(#sdl2)\bin\*.dll $(TARGET_OUTPUT_DIR) /D /Y" />
 		</ExtraCommands>
+		<Unit filename="AboutMenu.cpp" />
+		<Unit filename="AboutMenu.h" />
+		<Unit filename="Config.cpp" />
+		<Unit filename="Config.h" />
+		<Unit filename="Menu.cpp" />
+		<Unit filename="Menu.h" />
+		<Unit filename="constants.cpp" />
+		<Unit filename="constants.h" />
+		<Unit filename="gMap.cpp" />
+		<Unit filename="gMap.h" />
+		<Unit filename="inithelper.cpp" />
+		<Unit filename="inithelper.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
