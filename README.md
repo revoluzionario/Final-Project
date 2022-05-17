@@ -8,9 +8,12 @@ Các tính năng mới:
 - Cải tiến hệ thống giao diện người dùng
 
 Báo cáo dự án cuối kì cho học phần INT2215 1 - Lập trình nâng cao
+
 Họ và tên: Lê Công Hoàng
+
 MSSV: 21020322
-1. Hướng dẫn cài đặt: cách lấy chương trình về, tất cả các câu lệnh, cài đặt để có thể chạy được chương trình
+1. Hướng dẫn cài đặt:
+- Cách tải game: Tải file Minesweeper Alpha.rar từ repository này về, giải nén rồi nhấp vào game.exe hoặc Minesweeper Alpha để chơi.
 2. Mô tả chung về trò chơi, các ý tưởng chính
 3. Mô tả các chức năng đã cài đặt, kèm video minh họa (chèn link video youtube)
 4. Các kỹ thuật lập trình được sử dụng trong chương trình (mảng, con trỏ, cấu trúc, lớp, đồ họa ...)
