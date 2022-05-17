@@ -122,6 +122,7 @@ bool loadMedia()
 
     gBackgroundTexture = loadTexture(gRenderer,"res/background/background.png");
     gAboutTexture = loadTexture(gRenderer,"res/background/about.png");
+    gTutorialTexture = loadTexture(gRenderer,"res/background/aboutTutorial.png");
     gGraySurface = loadTexture(gRenderer,"res/background/graysurface.png");
     logo = loadTexture(gRenderer,"res/background/logo.png");
 	//Load sprites
@@ -142,9 +143,14 @@ bool loadMedia()
     aboutButton = loadTexture(gRenderer,"res/gui/aboutButton.png");
     playButton = loadTexture(gRenderer,"res/gui/playButton.png");
     returnButton = loadTexture(gRenderer,"res/gui/returnButton.png");
+    forwardButton = loadTexture(gRenderer,"res/gui/forwardButton.png");
     easyDifButton = loadTexture(gRenderer,"res/gui/Easy.png");
     normalDifButton = loadTexture(gRenderer,"res/gui/Normal.png");
     hardDifButton = loadTexture(gRenderer,"res/gui/Hard.png");
+    SFXButtonOff = loadTexture(gRenderer,"res/gui/SFX_off.png");
+    SFXButtonOn = loadTexture(gRenderer,"res/gui/SFX_on.png");
+    musicButtonOff = loadTexture(gRenderer,"res/gui/muted.png");
+    musicButtonOn = loadTexture(gRenderer,"res/gui/unmuted.png");
     gameFont = loadFont("res/font/DTM-Sans.ttf",20);
 	//Load sound effects
 	winner = Mix_LoadMUS( "res/sounds/winner.wav" );
@@ -154,7 +160,7 @@ bool loadMedia()
 		success = false;
 	}
 
-	loser = Mix_LoadMUS( "res/sounds/loser.wav" );
+	loser = Mix_LoadWAV( "res/sounds/loser.wav" );
 	if( loser == NULL )
 	{
 		cout << "Failed to load loser sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
@@ -167,7 +173,12 @@ bool loadMedia()
 		cout << "Failed to load click sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
 		success = false;
 	}
-    //backgroundMusic = Mix_LoadMUS("");
+	backgroundMusic = Mix_LoadMUS("res/sounds/mainmusic.mp3");
+	if( backgroundMusic == NULL )
+	{
+		cout << "Failed to load background music! SDL_mixer Error: " << Mix_GetError() << endl;
+		success = false;
+	}
 	return success;
 }
 void close()
@@ -196,6 +207,10 @@ void close()
     SDL_DestroyTexture(easyDifButton);
     SDL_DestroyTexture(normalDifButton);
     SDL_DestroyTexture(hardDifButton);
+    SDL_DestroyTexture(musicButtonOn);
+    SDL_DestroyTexture(musicButtonOff);
+    SDL_DestroyTexture(SFXButtonOn);
+    SDL_DestroyTexture(SFXButtonOff);
     gBackgroundTexture = NULL;
     gAboutTexture = NULL;
     gGraySurface = NULL;
@@ -218,13 +233,19 @@ void close()
     easyDifButton = NULL;
     normalDifButton = NULL;
     hardDifButton = NULL;
+    musicButtonOff = NULL;
+    musicButtonOn = NULL;
+    SFXButtonOff = NULL;
+    SFXButtonOn = NULL;
     logo = NULL;
     Mix_FreeMusic( winner );
-	Mix_FreeMusic( loser );
+	Mix_FreeChunk( loser );
 	Mix_FreeChunk( click );
+	Mix_FreeMusic(backgroundMusic);
 	winner = NULL;
 	loser = NULL;
 	click = NULL;
+	backgroundMusic = NULL;
     TTF_CloseFont( gameFont );
     gameFont = NULL;
     SDL_DestroyRenderer( gRenderer );

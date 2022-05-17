@@ -27,6 +27,10 @@ int main (int argc, char* argv[])
         {
         while (!isQuit)
             {
+                if (music)
+                {
+                    Mix_PlayMusic(backgroundMusic, 0);
+                }
                 switch (state)
                 {
                 case MENU:
@@ -67,11 +71,14 @@ int main (int argc, char* argv[])
                         while( SDL_PollEvent( &e ) != 0 )
                         {
                             //User requests quit
-                            if( e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
+                            if( e.type == SDL_QUIT)
                             {
                                 isQuit = true;
                             }
-
+                            if (e.key.keysym.sym == SDLK_ESCAPE)
+                            {
+                                state = MENU;
+                            }
                             //Handle button events
                             board->handleEvent();
                             board->win = board->checkWinning();

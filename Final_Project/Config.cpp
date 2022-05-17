@@ -14,10 +14,12 @@ void Config::renderConfig()
     SDL_Rect NormalButtonRect = {80*3,80*3,160,80};
     SDL_Rect HardButtonRect = {80*3,80*5,160,80};
     SDL_Rect PlayButtonRect = {80*3,80*7,160,80};
+    SDL_Rect returnButtonRect = {20,20,40,40};
     SDL_RenderCopy(gRenderer,easyDifButton,NULL,&EasyButtonRect);
     SDL_RenderCopy(gRenderer,normalDifButton,NULL,&NormalButtonRect);
     SDL_RenderCopy(gRenderer,hardDifButton,NULL,&HardButtonRect);
     SDL_RenderCopy(gRenderer,playButton,NULL,&PlayButtonRect);
+    SDL_RenderCopy(gRenderer,returnButton,NULL,&returnButtonRect);
     SDL_RenderPresent(gRenderer);
 }
 void Config::modifyStat()
@@ -53,6 +55,7 @@ void Config::handleEventConfig()
     SDL_Rect NormalButtonRect = {80*3,80*3,160,80};
     SDL_Rect HardButtonRect = {80*3,80*5,160,80};
     SDL_Rect PlayButtonRect = {80*3,80*7,160,80};
+    SDL_Rect returnButtonRect = {20,20,40,40};
                         while( SDL_PollEvent( &e ) != 0 )
                         {
                             if( e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP )
@@ -61,20 +64,29 @@ void Config::handleEventConfig()
                                 {
                                     int posX, posY;
                                     SDL_GetMouseState( &posX, &posY );
+                                    if (isInside(posX,posY,returnButtonRect))
+                                    {
+                                        if (SFX) Mix_PlayChannel(-1, click, 0);
+                                       state = MENU;
+                                    }
                                     if (isInside(posX,posY,EasyButtonRect))
                                     {
+                                        if (SFX) Mix_PlayChannel(-1, click, 0);
                                        difficulty = EASY;
                                     }
                                     if (isInside(posX,posY,NormalButtonRect))
                                     {
+                                        if (SFX) Mix_PlayChannel(-1, click, 0);
                                        difficulty = NORMAL;
                                     }
                                     if (isInside(posX,posY,HardButtonRect))
                                     {
+                                        if (SFX) Mix_PlayChannel(-1, click, 0);
                                        difficulty = HARD;
                                     }
                                     if (isInside(posX,posY,PlayButtonRect)&&difficulty!=DEFAULT)
                                     {
+                                        if (SFX) Mix_PlayChannel(-1, click, 0);
                                         modifyStat();
                                         state = PLAY;
                                     }
@@ -90,6 +102,7 @@ void Config::handleEventConfig()
                             if (e.type == SDL_QUIT)
                             {
                                 isQuit = true;
+                                exit(1);
                             }
                         }
 

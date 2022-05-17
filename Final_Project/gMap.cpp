@@ -1,4 +1,5 @@
 #include "gMap.h"
+#include <windows.h>
 using std::cout,std::endl,std::string;
 bool isInside(const int posX, const int posY, SDL_Rect &rect)
 {
@@ -139,7 +140,7 @@ void gMap::handleEvent()
             {
                 //Play the sound effect
 
-				Mix_PlayChannel(-1, click, 0);
+				if (SFX) Mix_PlayChannel(-1, click, 0);
 
 				//Set mouse clicked
 				switch (e.button.button)
@@ -255,7 +256,7 @@ void gMap::endgameFlag()
         SDL_Delay(500);
 
         //Play victory music
-        Mix_PlayMusic(winner, 0);
+        if (music) Mix_PlayMusic(winner, 0);
         //Render winning scene
         SDL_Rect youWinRect = {640/3,645,640/3-30,30};
         SDL_Color white {0xFF,0xFF,0xFF};
@@ -269,16 +270,38 @@ void gMap::endgameFlag()
     if ( lose )
     {
         //Play losing music
-        Mix_PlayMusic(loser, 0);
-
+        bool isBreak = false;
+        for( int i = 0; i < ROW_SIZE && !isBreak; i++ )
+        {
+            for ( int j = 0; j < COLUMN_SIZE && !isBreak; j++ )
+            {
+                Mix_HaltMusic();
+                while (SDL_PollEvent(&e)!=0)
+                if( e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP )
+                {
+                    if ( e.type == SDL_MOUSEBUTTONDOWN)
+                    {
+                        isBreak = true;
+                    }
+                }
+                if (Board[i][j] == 9)
+                {
+                     sBoard[i][j] = Board[i][j];
+                     renderTable();
+                     SDL_RenderPresent(gRenderer);
+                    if (SFX) Mix_PlayChannel(-1, loser, 0);
+                     Sleep(150);
+                }
+            }
+        }
         for( int i = 0; i < ROW_SIZE; i++ )
         {
             for ( int j = 0; j < COLUMN_SIZE; j++ )
             {
-                sBoard[i][j] = Board[i][j];
-                renderTable();
+                    sBoard[i][j] = Board[i][j];
             }
         }
+        renderTable();
         SDL_Rect youLoseRect = {640/3,645,640/3-30,30};
         SDL_Color white {0xFF,0xFF,0xFF};
         SDL_Texture* youLose = loadTexture(gRenderer,gameFont,white,"YOU LOSE!");
@@ -306,6 +329,7 @@ void gMap::playAgainManager()
                                     if (isInside(posX,posY,yesRect))
                                     {
                                         Mix_HaltMusic();
+                                        if (SFX) Mix_PlayChannel(-1, click, 0);
                                         isQuit = false;
                                         win = false;
                                         lose = false;
@@ -313,6 +337,7 @@ void gMap::playAgainManager()
                                     if (isInside(posX,posY,noRect))
                                     {
                                         state = MENU;
+                                        if (SFX) Mix_PlayChannel(-1, click, 0);
                                         Mix_HaltMusic();
                                         isQuit = false;
                                         win = false;

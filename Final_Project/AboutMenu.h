@@ -7,6 +7,7 @@
 class AboutMenu
 {
     public:
+    int page;
     AboutMenu();
     ~AboutMenu();
     renderAbout();

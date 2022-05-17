@@ -7,6 +7,8 @@ int DISTANCE_BETWEEN = (SCREEN_WIDTH - ROW_SIZE * TILE_SIZE) / 2;
 int MINE_COUNT = 3;
 const int TILE_SIZE = 32;
 bool isQuit = false;
+bool SFX = true;
+bool music = true;
 SDL_Event e;
 
  gameState state = MENU;
@@ -19,7 +21,7 @@ SDL_Event e;
 
 //The sound effects that will be used
  Mix_Music *winner = NULL;
- Mix_Music *loser = NULL;
+ Mix_Chunk *loser = NULL;
  Mix_Chunk *click = NULL;
  Mix_Music *backgroundMusic = NULL;
 //Globally used font
@@ -42,13 +44,19 @@ TTF_Font* gameFont = NULL;
  SDL_Texture* gWinningTexture= NULL;
  SDL_Texture* gBackgroundTexture= NULL;
  SDL_Texture* gAboutTexture= NULL;
+ SDL_Texture* gTutorialTexture = NULL;
  SDL_Texture* gGraySurface = NULL;
  SDL_Texture* logo = NULL;
 
  SDL_Texture* aboutButton = NULL;
  SDL_Texture* playButton = NULL;
  SDL_Texture* returnButton = NULL;
+ SDL_Texture* forwardButton = NULL;
  SDL_Texture* playAgainGUI = NULL;
  SDL_Texture* easyDifButton = NULL;
  SDL_Texture* normalDifButton = NULL;
  SDL_Texture* hardDifButton = NULL;
+ SDL_Texture* musicButtonOn = NULL;
+ SDL_Texture* musicButtonOff = NULL;
+ SDL_Texture* SFXButtonOn = NULL;
+ SDL_Texture* SFXButtonOff = NULL;

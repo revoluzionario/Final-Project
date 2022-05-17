@@ -13,6 +13,8 @@ extern int MINE_COUNT;
 extern const int TILE_SIZE;
 extern bool isQuit;
 extern SDL_Event e;
+extern bool SFX;
+extern bool music;
 enum gameState
 {
     MENU, ABOUT, PLAY, CONFIG
@@ -35,13 +37,17 @@ extern SDL_Texture* returnButton;
 extern SDL_Texture* playAgainGUI;
 extern SDL_Texture* easyDifButton;
 extern SDL_Texture* normalDifButton;
+extern SDL_Texture* forwardButton;
 extern SDL_Texture* hardDifButton;
-
+extern SDL_Texture* SFXButtonOn;
+extern SDL_Texture* SFXButtonOff;
+extern SDL_Texture* musicButtonOn;
+extern SDL_Texture* musicButtonOff;
 //Global font
 extern TTF_Font* gameFont;
 //The sound effects that will be used
 extern Mix_Music *winner;
-extern Mix_Music *loser;
+extern Mix_Chunk *loser;
 extern Mix_Chunk *click;
 extern Mix_Music *backgroundMusic;
 
@@ -63,6 +69,7 @@ extern SDL_Texture* Tile_8;
 extern SDL_Texture* gBackgroundTexture;
 extern SDL_Texture* gAboutTexture;
 extern SDL_Texture* gGraySurface;
+extern SDL_Texture* gTutorialTexture;
 extern SDL_Texture* logo;
 
 
