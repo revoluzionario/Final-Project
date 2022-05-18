@@ -15,10 +15,13 @@ MSSV: 21020322
 1. Hướng dẫn cài đặt:
 - Cách tải game: Tải file Minesweeper Alpha.rar từ repository này về, giải nén rồi nhấp vào game.exe hoặc Minesweeper Alpha để chơi.
 2. Mô tả chung về trò chơi, các ý tưởng chính
+
 a) Mô tả chung về trò chơi:
+
 + Tên trò chơi: Minesweeper
 + Được làm bằng ngôn ngữ lập trình C++, nền tảng đồ họa SDL 2.0
 + Cách chơi: Cho một bảng ô vuông với các ô vuông có mìn và không có mìn, các ô không có mìn sẽ có 1 con số, con số đó biểu thị số lượng mìn xung quanh ô đó. Bạn chỉ thắng khi mở hết tất cả các ô vuông không có mìn, và thua khi mở phải ô có mìn. Nhấn chuột trái để mở ô vuông, nhấn chuột phải để gắn/gỡ cờ. Các ô có cờ không thể mở được.
+
 b) Các ý tưởng chính:
 + Gameplay cơ bản của game dò mìn
 + Hệ thống chọn độ khó
