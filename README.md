@@ -42,6 +42,7 @@ b) Các ý tưởng chính:
 + Các kiến thức khác được sử dụng: Mảng, con trỏ, hệ thống điều khiển trạng thái game bằng vòng lặp và cấu trúc điều kiện, hệ thống tạo số ngẫu nhiên,...
 + Hệ thống các phím GUI được tự vẽ.
 5. Kết luận, hướng phát triển và các điều tâm đắc rút ra được sau khi hoàn thiện chương trình
+
 a) Những kiến thức và kinh nghiệm đã học được sau dự án:
 + Học được cách vận hành của một game, đặc biệt là các game loop
 + Cách sử dụng SDL 2.0 để tạo một chương trình đồ họa có đồ họa và âm thanh
