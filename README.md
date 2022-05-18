@@ -28,7 +28,8 @@ b) Các ý tưởng chính:
 + Hệ thống giao diện người dùng
 + Hệ thống âm thanh
 3. Mô tả các chức năng đã cài đặt, kèm video minh họa (chèn link video youtube)
- Các chức năng được cài đặt trong trò chơi:
+
+Các chức năng được cài đặt trong trò chơi:
 + Hệ thống âm thanh hoàn chỉnh: Nhạc nền, hiệu ứng âm thanh khi click chuột, dính mìn,..., hệ thống các nút để điều khiển tiếng (tắt/mở tiếng)
 + Hệ thống giao diện tương tác với người dùng: Menu, các phím bấm, hành động khi bấm phím ESC, hành động chuyển màn hình và thay đổi trạng thái của game (từ Menu đến hướng dẫn...)
 + Hệ thống đồ họa hiển thị được lập trình với SDL 2.0
