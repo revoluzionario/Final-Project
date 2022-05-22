@@ -29,7 +29,7 @@ int main (int argc, char* argv[])
             {
                 if (music)
                 {
-                    Mix_PlayMusic(backgroundMusic, 0);
+                    Mix_PlayMusic(backgroundMusic, -1);
                 }
                 switch (state)
                 {
